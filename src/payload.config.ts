@@ -41,9 +41,27 @@ export default buildConfig({
   },
   collections: [Users, Pages, Categories, Media],
   db: postgresAdapter({
+    migrationDir: path.resolve(dirname, 'migrations'),
     pool: {
-      connectionString: process.env.DATABASE_URI || '',
+      connectionString: process.env.DATABASE_URI,
     },
+    schemaName: process.env.DATABASE_SCHEMA || undefined,
+    beforeSchemaInit: [
+      ({ schema, adapter }) => {
+        for (const tableName in adapter.rawTables) {
+          const table = adapter.rawTables[tableName]
+
+          for (const fieldName in table.columns) {
+            const column = table.columns[fieldName]
+
+            if (column.type === 'enum') {
+              ;(column as any).type = 'varchar'
+            }
+          }
+        }
+        return schema
+      },
+    ],
   }),
   editor: lexicalEditor({
     features: () => {
