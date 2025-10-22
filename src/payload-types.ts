@@ -335,6 +335,7 @@ export interface Media {
     };
     [k: string]: unknown;
   } | null;
+  _key?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -1352,6 +1353,7 @@ export interface CategoriesSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
+  _key?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
