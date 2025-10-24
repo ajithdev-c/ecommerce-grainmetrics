@@ -1,5 +1,5 @@
 // storage-adapter-import-placeholder
-import { postgresAdapter } from '@payloadcms/db-postgres'
+import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
 
 import {
   BoldFeature,
@@ -40,28 +40,10 @@ export default buildConfig({
     user: Users.slug,
   },
   collections: [Users, Pages, Categories, Media],
-  db: postgresAdapter({
-    migrationDir: path.resolve(dirname, 'migrations'),
+  db: vercelPostgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL,
+      connectionString: process.env.POSTGRES_URL || '',
     },
-    schemaName: process.env.DATABASE_SCHEMA || undefined,
-    beforeSchemaInit: [
-      ({ schema, adapter }) => {
-        for (const tableName in adapter.rawTables) {
-          const table = adapter.rawTables[tableName]
-
-          for (const fieldName in table.columns) {
-            const column = table.columns[fieldName]
-
-            if (column.type === 'enum') {
-              ;(column as any).type = 'varchar'
-            }
-          }
-        }
-        return schema
-      },
-    ],
   }),
   editor: lexicalEditor({
     features: () => {
