@@ -15,7 +15,7 @@ import { customerOnlyFieldAccess } from '@/access/customerOnlyFieldAccess'
 import { ProductsCollection } from '@/collections/Products'
 import { Page, Product } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
-import { uploadthingConfig } from './storageUploadthingConfig'
+import { uploadthingStorage } from '@payloadcms/storage-uploadthing'
 
 const generateTitle: GenerateTitle<Product | Page> = ({ doc }) => {
   return doc?.title ? `${doc.title} | Payload Ecommerce Template` : 'Payload Ecommerce Template'
@@ -90,5 +90,13 @@ export const plugins: Plugin[] = [
       productsCollectionOverride: ProductsCollection,
     },
   }),
-  uploadthingConfig,
+  uploadthingStorage({
+    collections: {
+      media: true,
+    },
+    options: {
+      token: process.env.UPLOADTHING_TOKEN,
+      acl: 'public-read',
+    },
+  }),
 ]
